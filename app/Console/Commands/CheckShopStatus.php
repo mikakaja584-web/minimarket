@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Console\Commands;
-
 use Illuminate\Console\Command;
 
 class CheckShopStatus extends Command
@@ -32,7 +31,7 @@ class CheckShopStatus extends Command
             $this->comment('Silakan kasir bersiap di meja transaksi.');
         } else {
             $this->error("Halo {$namaKasir}, Status Toko pada jam {$jam}:00 WIB adalah: TUTUP");
-            $this->comment('Akses transaksi kasir dinonaktifkan sementara.');
+            $this->warn('Akses transaksi kasir dinonaktifkan sementara.');
         }
 
         return Command::SUCCESS;
