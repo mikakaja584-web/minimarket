@@ -1,40 +1,16 @@
 <?php
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\LaporanPenjualanController;
 
 Route::get('/', function () {
-    return view('dashboard_pos', [
-        'nama_pegawai' => 'Budi Santoso',
-        'shift' => 'Pagi (08:00 - 15:00)'
-    ]);
+    return view('welcome');
 });
 
-Route::get('/produk/{id}', function ($id) {
-    return 'Menampilkan data produk dengan ID: ' . $id;
-});
-
-Route::get('/produk/cari/{nama?}', function ($nama = null) {
-    if ($nama) {
-        return 'Hasil pencarian produk: ' . $nama;
-    }
-    return 'Silakan masukkan kata kunci pencarian pada URL
-    (contoh: /produk/cari/sabun)';
-});
-
-Route::prefix('admin')->group(function () {
-    Route::get('/produk', function () {
-        return 'Halaman Kelola Produk (Hanya Admin)';
-    })->name('admin.produk');
-
-    Route::get('/kategori', function () {
-        return 'Halaman Kelola Kategori Produk (Hanya Admin)';
-    })->name('admin.kategori');
-});
-
-Route::prefix('kasir')->group(function () {
-    Route::get('/transaksi', function () {
-        return 'Halaman Input Transaksi Penjualan (Kasir)';
-    })->name('kasir.transaksi');
-});
+//Routing menuju Controller
+Route::get('/produk', [ProdukController::class, 'index']);
+Route::get('/produk/{id}', [ProdukController::class, 'show']);
+Route::get('/laporan', LaporanPenjualanController::class);
 
 Route::get('/produk-toko', function () {
     $produk = [
