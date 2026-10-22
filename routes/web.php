@@ -2,13 +2,22 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\LaporanPenjualanController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 //Routing menuju Controller
-Route::get('/produk', [ProdukController::class, 'index']);
+Route::get('/produk', [ProdukController::class, 'index'])
+    ->name('products.index');
+
+Route::get('/produk/tambah', [ProdukController::class, 'create'])
+    ->name('produk.create');
+
+Route::post('/produk', [ProdukController::class, 'store'])
+    ->name('produk.store');
+
 Route::get('/produk/{id}', [ProdukController::class, 'show']);
 Route::get('/laporan', LaporanPenjualanController::class);
 
@@ -41,3 +50,6 @@ Route::get('/produk-toko', function () {
         'produk' => $produk
     ]);
 });
+
+Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])
+    ->name('orders.invoice');
