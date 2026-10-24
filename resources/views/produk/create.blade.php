@@ -402,12 +402,23 @@
                             id="image"
                             name="image"
                             accept=".jpg,.jpeg,.png,.webp"
+                            required
                         >
 
                         <span class="hint">
-                            Format JPG, JPEG, PNG, atau WebP.
-                            Ukuran maksimal 2 MB.
+                            Format JPG, JPEG, PNG, atau WebP. Ukuran maksimal 2 MB.
                         </span>
+
+                        <button
+                            type="button"
+                            id="preview-button"
+                            class="btn-submit"
+                            style="margin-top: 10px; align-self: flex-start;"
+                        >
+                            Tampilkan Gambar
+                        </button>
+
+                        <div id="preview-result" style="margin-top: 15px;"></div>
                     </div>
 
                 </div>
@@ -426,5 +437,62 @@
         </main>
 
     </div>
+
+<script>
+    const imageInput = document.getElementById('image');
+    const previewButton = document.getElementById('preview-button');
+    const previewResult = document.getElementById('preview-result');
+
+    previewButton.addEventListener('click', async function () {
+        const file = imageInput.files[0];
+
+        if (!file) {
+            alert('Pilih gambar terlebih dahulu!');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const token = document.querySelector('input[name="_token"]').value;
+
+        previewResult.innerHTML = 'Memproses gambar...';
+
+        try {
+            const response = await fetch(
+                '{{ route("produk.previewImage") }}',
+                {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': token,
+                        'Accept': 'image/jpeg'
+                    },
+                    body: formData
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('Gagal memproses gambar.');
+            }
+
+            const imageBlob = await response.blob();
+            const imageUrl = URL.createObjectURL(imageBlob);
+
+            previewResult.innerHTML = '';
+
+            const preview = document.createElement('img');
+            preview.src = imageUrl;
+            preview.alt = 'Preview gambar produk';
+            preview.style.maxWidth = '300px';
+            preview.style.maxHeight = '300px';
+            preview.style.objectFit = 'contain';
+            preview.style.borderRadius = '10px';
+
+            previewResult.appendChild(preview);
+        } catch (error) {
+            previewResult.textContent = error.message;
+        }
+    });
+</script>
 </body>
 </html>

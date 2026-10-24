@@ -178,6 +178,7 @@
                         <th>SKU</th>
                         <th>Harga</th>
                         <th>Stok</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
 
@@ -202,10 +203,32 @@
                                 Rp {{ number_format($produk->price, 0, ',', '.') }}
                             </td>
                             <td>{{ $produk->stock }}</td>
+<td>
+    <a href="{{ route('products.edit', $produk->id) }}"
+       class="btn"
+       style="padding: 8px 12px; margin-right: 5px;">
+        Edit
+    </a>
+
+    <form action="{{ route('products.destroy', $produk->id) }}"
+          method="POST"
+          style="display: inline;"
+          onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
+        @csrf
+        @method('DELETE')
+
+        <button type="submit"
+                class="btn"
+                style="padding: 8px 12px; background: #dc3545; border: none; cursor: pointer;">
+            Hapus
+        </button>
+    </form>
+</td>
+
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="empty">
+                            <td colspan="6" class="empty">
                                 Belum ada produk yang tersimpan.
                             </td>
                         </tr>
