@@ -30,16 +30,8 @@ class RegisterController extends Controller
             'password' => $request->password,
         ]);
 
-        Mail::to($user->email)->queue(new WelcomeMail($user));
-
         Auth::login($user);
 
-        $user->sendEmailVerificationNotification();
-
-
-        return redirect('/')->with(
-            'success',
-            'Registrasi berhasil! Silakan periksa email untuk verifikasi.'
-        );
+        return redirect('/transaksi')->with('success', 'Registrasi berhasil!');
     }
 }

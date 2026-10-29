@@ -8,6 +8,9 @@ use App\Http\Controllers\EmailController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Events\OrderPlaced;
+use App\Models\Order;
+use App\Models\User;
 
 Route::get('/register', [RegisterController::class,  'showRegistrationForm'])
     ->name('register');
@@ -106,3 +109,27 @@ Route::post('/email/verification-notification', function (Request $request) {
         'Email verifikasi berhasil diminta ulang!'
     );
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+Route::get('/test-broadcast', function () {
+    $order = Order::first();
+
+    if (!$order) {
+        return 'Belum ada data order di database.';
+    }
+
+    $user = $order->customer;
+
+    if (!$user) {
+        return 'Order belum memiliki customer.';
+    }
+
+    OrderPlaced::dispatch($order, $user);
+
+    return 'Event OrderPlaced berhasil dipicu!';
+})->middleware('auth');
+
+Route::get('/transaksi', [OrderController::class, 'create'])
+    ->name('transaksi.create');
+
+Route::post('/transaksi', [OrderController::class, 'store'])
+    ->name('transaksi.store');
